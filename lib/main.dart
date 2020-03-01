@@ -82,7 +82,9 @@ void paint(Canvas canvas, Size size)
 }
 
 @override 
-bool shouldRepaint(CustomPainter oldPainter) => true;
+bool shouldRepaint(CustomPainter oldPainter){
+    return true;
+}
 
 
 }
