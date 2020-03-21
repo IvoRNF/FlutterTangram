@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
-class XTriangle extends StatefulWidget {
+class XRectangle extends StatefulWidget {
   double xleft = 0;
   double xtop = 0;
   double xwidth = 0;
   double xheight = 0;
   MaterialColor xcolor;
-  XTriangle(double left, double top, double width, double height,
+  XRectangle(double left, double top, double width, double height,
       MaterialColor color) {
     this.xleft = left;
     this.xtop = top;
@@ -17,11 +17,11 @@ class XTriangle extends StatefulWidget {
 
   @override
   State<StatefulWidget> createState() {
-    return _XTriangle();
+    return _XRectangle();
   }
 }
 
-class _XTriangle extends State<XTriangle> {
+class _XRectangle extends State<XRectangle> {
   @override
   Widget build(BuildContext context) {
     return Positioned(
@@ -36,7 +36,7 @@ class _XTriangle extends State<XTriangle> {
             },
             child: Container(
               child: CustomPaint(
-                painter: _XTrianglePainter(this.widget.xwidth,this.widget.xheight,this.widget.xcolor),
+                painter: _XRectanglePainter(this.widget.xwidth,this.widget.xheight,this.widget.xcolor),
               ),
               width: this.widget.xwidth,
               height: this.widget.xheight,
@@ -44,14 +44,14 @@ class _XTriangle extends State<XTriangle> {
   }
 }
 
-class _XTrianglePainter extends CustomPainter 
+class _XRectanglePainter extends CustomPainter 
 {
 
 
   double xwidth = 0; 
   double xheight = 0; 
   MaterialColor xcolor;
-  _XTrianglePainter(double width, double height, MaterialColor color)
+  _XRectanglePainter(double width, double height, MaterialColor color)
   {
 
     this.xwidth = width; 
@@ -64,14 +64,10 @@ class _XTrianglePainter extends CustomPainter
   @override 
   void paint(Canvas canvas, Size size) 
   {
-      var path = Path();
-      Paint paint = Paint();
-      paint.color = this.xcolor; 
-      path.moveTo(0, 0);
-      path.lineTo(0+this.xwidth, 0);
-      path.lineTo(0,0+this.xheight);
-      path.close();
-      canvas.drawPath(path, paint);    
+     Paint paint = Paint();
+     paint.color = this.xcolor; 
+     var rect = Rect.fromLTWH(0,0,this.xwidth,this.xheight);
+     canvas.drawRect(rect, paint);     
   }
 
   @override 
