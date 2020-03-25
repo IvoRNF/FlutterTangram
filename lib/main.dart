@@ -4,21 +4,34 @@ import './triangle.dart';
 
 void main() => runApp(TangramApp());
 
-class TangramApp extends StatelessWidget {
+class TangramApp extends StatefulWidget {
   final String title = 'Tangram';
   List<Widget> drawedWidgets = [];
 
+
+ 
+
+   @override
+  State<StatefulWidget> createState() {
+    return _TangramApp();
+  }
+
+  
+}
+class _TangramApp extends State<TangramApp>
+{
   @override
   Widget build(BuildContext context) {
-    this.drawedWidgets.clear();
+    this.widget.drawedWidgets.clear();
+
     var drawRectangle =
         (double l, double t, double w, double h, MaterialColor cl) {
-      this.drawedWidgets.add(XRectangle(l, t, w, h, cl));
+      this.widget.drawedWidgets.add(XRectangle(l, t, w, h, cl,this.widget.drawedWidgets,UniqueKey()));
     };
 
     var drawTriangle =
         (double l, double t, double w, double h, MaterialColor cl) {
-      this.drawedWidgets.add(XTriangle(l, t, w, h, cl));
+      this.widget.drawedWidgets.add(XTriangle(l, t, w, h, cl));
     };
 
     num left = 75;
@@ -42,17 +55,17 @@ class TangramApp extends StatelessWidget {
     drawRectangle(initLeft, top + wh + 50, wh * 2, wh * 2, Colors.grey);
 
     return MaterialApp(
-      title: this.title,
+      title: this.widget.title,
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primarySwatch: Colors.pink,
       ),
       home: Scaffold(
         appBar: AppBar(
-          title: Text(this.title),
+          title: Text(this.widget.title),
         ),
         body: Stack(
-          children: this.drawedWidgets,
+          children: this.widget.drawedWidgets,
         ),
       ),
     );
