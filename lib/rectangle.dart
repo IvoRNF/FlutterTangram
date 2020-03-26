@@ -7,10 +7,12 @@ class XRectangle extends StatefulWidget {
   double xheight = 0;
   MaterialColor xcolor;
   bool isSelected = false;
-  List<Widget> brotherWidgets;
+  bool dragable = true;
+  
+  Function panUpdate;
   XRectangle(double left, double top, double width, double height,
-      MaterialColor color, List<Widget> brotherWidgets, Key key) 
-  : this.brotherWidgets= brotherWidgets, super(key : key)     
+      MaterialColor color, bool isSelected ,bool dragable,Function panUpdate, Key key) 
+  :  this.isSelected = isSelected, this.dragable = dragable,this.panUpdate = panUpdate ,super(key : key)  
     
   {
     this.xleft = left;
@@ -35,15 +37,11 @@ class _XRectangle extends State<XRectangle> {
         child: GestureDetector(
             onPanUpdate: (tapInfo) {
               setState(() {
-
-                for(int i = 0 ; i < this.widget.brotherWidgets.length ; i++)
-                {
-                   
-                   if(this.widget.brotherWidgets[i] is XRectangle)
-                   {
-                     (this.widget.brotherWidgets[i] as XRectangle).isSelected = false;
-                   }
-                }
+                 
+                if(!this.widget.dragable)
+                  return;
+                //if(this.widget.panUpdate != null)
+                  //this.widget.panUpdate();
                 this.widget.isSelected = true;
                 this.widget.xleft += tapInfo.delta.dx;
                 this.widget.xtop += tapInfo.delta.dy;
@@ -51,7 +49,7 @@ class _XRectangle extends State<XRectangle> {
               });
             },
             child: Container(
-              decoration: this.widget.isSelected
+              decoration: (this.widget.isSelected && this.widget.dragable)
                   ? BoxDecoration(
                       border: Border.all(
                           color: Colors.black,
@@ -62,7 +60,7 @@ class _XRectangle extends State<XRectangle> {
                 painter: _XRectanglePainter(this.widget.xwidth,
                     this.widget.xheight, this.widget.xcolor),
               ),
-              width: this.widget.isSelected
+              width: (this.widget.isSelected && this.widget.dragable)
                   ? this.widget.xwidth + 10
                   : this.widget.xwidth,
               height: this.widget.isSelected
@@ -92,7 +90,7 @@ class _XRectanglePainter extends CustomPainter {
 
   @override
   bool shouldRepaint(CustomPainter olderRepainter) {
-    //return (olderRepainter != this);
-    return true;
+    return (olderRepainter != this);
+    
   }
 }

@@ -6,54 +6,34 @@ void main() => runApp(TangramApp());
 
 class TangramApp extends StatefulWidget {
   final String title = 'Tangram';
+  bool isSel = false;
+  num xwidth = 100;
+  num xheight = 100;
   List<Widget> drawedWidgets = [];
 
-
- 
-
-   @override
+  @override
   State<StatefulWidget> createState() {
     return _TangramApp();
   }
-
-  
 }
-class _TangramApp extends State<TangramApp>
-{
+
+class _TangramApp extends State<TangramApp> {
+  @override
+  void initState() {
+    super.initState();
+  }
+
+ 
+  void panUpdate()
+  {
+     
+     setState(() {
+        this.widget.isSel = false;
+     }); 
+  }
+ 
   @override
   Widget build(BuildContext context) {
-    this.widget.drawedWidgets.clear();
-
-    var drawRectangle =
-        (double l, double t, double w, double h, MaterialColor cl) {
-      this.widget.drawedWidgets.add(XRectangle(l, t, w, h, cl,this.widget.drawedWidgets,UniqueKey()));
-    };
-
-    var drawTriangle =
-        (double l, double t, double w, double h, MaterialColor cl) {
-      this.widget.drawedWidgets.add(XTriangle(l, t, w, h, cl));
-    };
-
-    num left = 75;
-    num initLeft = left;
-    num top = 75;
-    num wh = 100;
-    drawRectangle(left, top, wh, wh, Colors.blue);
-    left = left + wh + 20;
-    drawRectangle(left, top, wh, wh, Colors.red);
-    left = left + wh + 20;
-    drawTriangle(left, top, wh, wh, Colors.green);
-
-    left = initLeft;
-    top = top + wh + 20;
-    drawTriangle(left, top, wh, wh, Colors.orange);
-    left = left + wh + 20;
-    drawTriangle(left, top, wh, wh, Colors.pink);
-    left = left + wh + 20;
-    drawTriangle(left, top, wh, wh, Colors.purple);
-    //quadro
-    drawRectangle(initLeft, top + wh + 50, wh * 2, wh * 2, Colors.grey);
-
     return MaterialApp(
       title: this.widget.title,
       debugShowCheckedModeBanner: false,
@@ -65,7 +45,36 @@ class _TangramApp extends State<TangramApp>
           title: Text(this.widget.title),
         ),
         body: Stack(
-          children: this.widget.drawedWidgets,
+          children: [
+            XRectangle(
+                75,
+                195 + this.widget.xwidth + 50,
+                this.widget.xwidth * 2,
+                this.widget.xheight * 2,
+                Colors.grey,
+                false,
+                false,
+                null,
+                UniqueKey()),
+            XRectangle(75, 75, this.widget.xwidth, this.widget.xheight,
+                Colors.blue, this.widget.isSel, true,panUpdate ,UniqueKey()),
+            XRectangle(195, 75, this.widget.xwidth,this.widget.xheight,
+                Colors.red, this.widget.isSel, true,panUpdate, UniqueKey()),
+            XRectangle(315, 75, this.widget.xwidth, this.widget.xheight,
+                Colors.green, this.widget.isSel, true,panUpdate ,UniqueKey()),
+            XTriangle(75, 195, this.widget.xwidth, this.widget.xheight,
+                Colors.orange),
+            XTriangle(
+                195, 195, this.widget.xwidth, this.widget.xheight, Colors.pink),
+            XTriangle(315, 195, this.widget.xwidth, this.widget.xheight,
+                Colors.purple),
+          ],
+        ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            
+          },
+          child: Icon(Icons.rotate_right),
         ),
       ),
     );
