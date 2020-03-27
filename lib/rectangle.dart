@@ -6,20 +6,36 @@ class XRectangle extends StatefulWidget {
   double xwidth = 0;
   double xheight = 0;
   MaterialColor xcolor;
-  bool isSelected = false;
+  int selectedIndex = -1;
+  int index = 0;
   bool dragable = true;
-  
-  Function panUpdate;
-  XRectangle(double left, double top, double width, double height,
-      MaterialColor color, bool isSelected ,bool dragable,Function panUpdate, Key key) 
-  :  this.isSelected = isSelected, this.dragable = dragable,this.panUpdate = panUpdate ,super(key : key)  
-    
-  {
+
+  Function onTap;
+  XRectangle(
+      {double left,
+      double top,
+      double width,
+      double height,
+      MaterialColor color,
+      int selectedIndex,
+      int index,
+      bool dragable,
+      Function onTap,
+      Key key})
+      : this.selectedIndex = selectedIndex,
+        this.index = index,
+        this.dragable = dragable,
+        this.onTap = onTap,
+        super(key: key) {
     this.xleft = left;
     this.xtop = top;
     this.xwidth = width;
     this.xheight = height;
     this.xcolor = color;
+  }
+
+  bool get isSelected {
+    return ((this.selectedIndex ?? -1) == (this.index ?? 0));
   }
 
   @override
@@ -35,17 +51,15 @@ class _XRectangle extends State<XRectangle> {
         left: this.widget.xleft,
         top: this.widget.xtop,
         child: GestureDetector(
+            onTap: () {
+              this.widget.onTap(this.widget.index);
+            },
             onPanUpdate: (tapInfo) {
+              if (!this.widget.dragable) return;
+
               setState(() {
-                 
-                if(!this.widget.dragable)
-                  return;
-                //if(this.widget.panUpdate != null)
-                  //this.widget.panUpdate();
-                this.widget.isSelected = true;
                 this.widget.xleft += tapInfo.delta.dx;
                 this.widget.xtop += tapInfo.delta.dy;
-
               });
             },
             child: Container(
@@ -91,6 +105,5 @@ class _XRectanglePainter extends CustomPainter {
   @override
   bool shouldRepaint(CustomPainter olderRepainter) {
     return (olderRepainter != this);
-    
   }
 }

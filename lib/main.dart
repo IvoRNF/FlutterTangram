@@ -6,10 +6,9 @@ void main() => runApp(TangramApp());
 
 class TangramApp extends StatefulWidget {
   final String title = 'Tangram';
-  bool isSel = false;
+
   num xwidth = 100;
   num xheight = 100;
-  List<Widget> drawedWidgets = [];
 
   @override
   State<StatefulWidget> createState() {
@@ -18,20 +17,19 @@ class TangramApp extends StatefulWidget {
 }
 
 class _TangramApp extends State<TangramApp> {
+  int _selectedIndex = -1;
+
   @override
   void initState() {
     super.initState();
   }
 
- 
-  void panUpdate()
-  {
-     
-     setState(() {
-        this.widget.isSel = false;
-     }); 
+  void onTap(int index) {
+    /*setState(() {
+      this._selectedIndex = index;
+    });*/
   }
- 
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -47,21 +45,49 @@ class _TangramApp extends State<TangramApp> {
         body: Stack(
           children: [
             XRectangle(
-                75,
-                195 + this.widget.xwidth + 50,
-                this.widget.xwidth * 2,
-                this.widget.xheight * 2,
-                Colors.grey,
-                false,
-                false,
-                null,
-                UniqueKey()),
-            XRectangle(75, 75, this.widget.xwidth, this.widget.xheight,
-                Colors.blue, this.widget.isSel, true,panUpdate ,UniqueKey()),
-            XRectangle(195, 75, this.widget.xwidth,this.widget.xheight,
-                Colors.red, this.widget.isSel, true,panUpdate, UniqueKey()),
-            XRectangle(315, 75, this.widget.xwidth, this.widget.xheight,
-                Colors.green, this.widget.isSel, true,panUpdate ,UniqueKey()),
+                left: 75,
+                top: 195 + this.widget.xwidth + 50,
+                width: this.widget.xwidth * 2,
+                height: this.widget.xheight * 2,
+                color: Colors.grey,
+                selectedIndex: this._selectedIndex,
+                index: 0,
+                dragable: true,
+                onTap: this.onTap,
+                key: UniqueKey()),
+            XRectangle(
+                left: 75,
+                top: 75,
+                width: this.widget.xwidth,
+                height: this.widget.xheight,
+                color: Colors.blue,
+                selectedIndex: this._selectedIndex,
+                index: 1,
+                dragable: true,
+                onTap: this.onTap,
+                key: UniqueKey()),
+            XRectangle(
+                left: 195,
+                top: 75,
+                width: this.widget.xwidth,
+                height: this.widget.xheight,
+                color: Colors.red,
+                selectedIndex: this._selectedIndex,
+                index: 2,
+                dragable: true,
+                onTap: this.onTap,
+                key: UniqueKey()),
+            XRectangle(
+                left: 315,
+                top: 75,
+                width: this.widget.xwidth,
+                height: this.widget.xheight,
+                color: Colors.green,
+                selectedIndex: this._selectedIndex,
+                index: 3,
+                dragable: true,
+                onTap: this.onTap,
+                key: UniqueKey()),
             XTriangle(75, 195, this.widget.xwidth, this.widget.xheight,
                 Colors.orange),
             XTriangle(
@@ -71,9 +97,7 @@ class _TangramApp extends State<TangramApp> {
           ],
         ),
         floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            
-          },
+          onPressed: () {},
           child: Icon(Icons.rotate_right),
         ),
       ),
