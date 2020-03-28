@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import './observable.dart';
 
 class XRectangle extends StatefulWidget {
   double xleft = 0;
@@ -10,22 +11,17 @@ class XRectangle extends StatefulWidget {
   int index = 0;
   bool dragable = true;
 
-  Function onTap;
   XRectangle(
       {double left,
       double top,
       double width,
       double height,
       MaterialColor color,
-      int selectedIndex,
       int index,
       bool dragable,
-      Function onTap,
       Key key})
-      : this.selectedIndex = selectedIndex,
-        this.index = index,
+      : this.index = index,
         this.dragable = dragable,
-        this.onTap = onTap,
         super(key: key) {
     this.xleft = left;
     this.xtop = top;
@@ -35,7 +31,7 @@ class XRectangle extends StatefulWidget {
   }
 
   bool get isSelected {
-    return ((this.selectedIndex ?? -1) == (this.index ?? 0));
+    return ((this.selectedIndex ?? 0) == (this.index ?? 0) && this.dragable);
   }
 
   @override
@@ -46,20 +42,30 @@ class XRectangle extends StatefulWidget {
 
 class _XRectangle extends State<XRectangle> {
   @override
+  void initState() {
+    Observable obs = Observable();
+    obs.subscribe('changeSelection',(int selIndex) {
+      setState(() {
+        this.widget.selectedIndex = selIndex;
+      });
+    });
+  }
+
+
+  @override
   Widget build(BuildContext context) {
     return Positioned(
         left: this.widget.xleft,
         top: this.widget.xtop,
         child: GestureDetector(
-            onTap: () {
-              this.widget.onTap(this.widget.index);
-            },
             onPanUpdate: (tapInfo) {
               if (!this.widget.dragable) return;
 
               setState(() {
                 this.widget.xleft += tapInfo.delta.dx;
                 this.widget.xtop += tapInfo.delta.dy;
+                Observable obs = Observable();
+                obs.notify('changeSelection',this.widget.index);
               });
             },
             child: Container(

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import './rectangle.dart';
 import './triangle.dart';
+import './observable.dart';
+
 
 void main() => runApp(TangramApp());
 
@@ -18,18 +20,17 @@ class TangramApp extends StatefulWidget {
 
 class _TangramApp extends State<TangramApp> {
   int _selectedIndex = -1;
+  num xleft = 75;
+  num xtop = 75;
 
   @override
   void initState() {
     super.initState();
+
+    
   }
 
-  void onTap(int index) {
-    /*setState(() {
-      this._selectedIndex = index;
-    });*/
-  }
-
+  
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -50,21 +51,18 @@ class _TangramApp extends State<TangramApp> {
                 width: this.widget.xwidth * 2,
                 height: this.widget.xheight * 2,
                 color: Colors.grey,
-                selectedIndex: this._selectedIndex,
+                
                 index: 0,
-                dragable: true,
-                onTap: this.onTap,
+                dragable: false,
                 key: UniqueKey()),
             XRectangle(
-                left: 75,
-                top: 75,
+                left: this.xleft,
+                top: this.xtop,
                 width: this.widget.xwidth,
                 height: this.widget.xheight,
                 color: Colors.blue,
-                selectedIndex: this._selectedIndex,
                 index: 1,
                 dragable: true,
-                onTap: this.onTap,
                 key: UniqueKey()),
             XRectangle(
                 left: 195,
@@ -72,10 +70,8 @@ class _TangramApp extends State<TangramApp> {
                 width: this.widget.xwidth,
                 height: this.widget.xheight,
                 color: Colors.red,
-                selectedIndex: this._selectedIndex,
                 index: 2,
                 dragable: true,
-                onTap: this.onTap,
                 key: UniqueKey()),
             XRectangle(
                 left: 315,
@@ -83,10 +79,8 @@ class _TangramApp extends State<TangramApp> {
                 width: this.widget.xwidth,
                 height: this.widget.xheight,
                 color: Colors.green,
-                selectedIndex: this._selectedIndex,
                 index: 3,
                 dragable: true,
-                onTap: this.onTap,
                 key: UniqueKey()),
             XTriangle(75, 195, this.widget.xwidth, this.widget.xheight,
                 Colors.orange),
