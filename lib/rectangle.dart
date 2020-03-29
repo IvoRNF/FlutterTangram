@@ -7,8 +7,7 @@ class XRectangle extends StatefulWidget {
   double xwidth = 0;
   double xheight = 0;
   MaterialColor xcolor;
-  int selectedIndex = -1;
-  int index = 0;
+  Key selectedKey = UniqueKey();
   bool dragable = true;
 
   XRectangle(
@@ -17,12 +16,9 @@ class XRectangle extends StatefulWidget {
       double width,
       double height,
       MaterialColor color,
-      int index,
-      bool dragable,
-      Key key})
-      : this.index = index,
-        this.dragable = dragable,
-        super(key: key) {
+      bool dragable = true})
+      : this.dragable = dragable,
+        super(key: UniqueKey()) {
     this.xleft = left;
     this.xtop = top;
     this.xwidth = width;
@@ -31,7 +27,7 @@ class XRectangle extends StatefulWidget {
   }
 
   bool get isSelected {
-    return ((this.selectedIndex ?? 0) == (this.index ?? 0) && this.dragable);
+    return ((this.selectedKey == this.key) && this.dragable);
   }
 
   @override
@@ -43,14 +39,14 @@ class XRectangle extends StatefulWidget {
 class _XRectangle extends State<XRectangle> {
   @override
   void initState() {
+    super.initState();
     Observable obs = Observable();
-    obs.subscribe('changeSelection',(int selIndex) {
+    obs.subscribe('changeSelection', (Key selKey) {
       setState(() {
-        this.widget.selectedIndex = selIndex;
+        this.widget.selectedKey = selKey;
       });
     });
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -65,27 +61,19 @@ class _XRectangle extends State<XRectangle> {
                 this.widget.xleft += tapInfo.delta.dx;
                 this.widget.xtop += tapInfo.delta.dy;
                 Observable obs = Observable();
-                obs.notify('changeSelection',this.widget.index);
+                obs.notify('changeSelection', this.widget.key);
               });
             },
             child: Container(
-              decoration: (this.widget.isSelected && this.widget.dragable)
-                  ? BoxDecoration(
-                      border: Border.all(
-                          color: Colors.black,
-                          style: BorderStyle.solid,
-                          width: 5))
-                  : null,
               child: CustomPaint(
-                painter: _XRectanglePainter(this.widget.xwidth,
-                    this.widget.xheight, this.widget.xcolor),
+                painter: _XRectanglePainter(
+                    this.widget.xwidth,
+                    this.widget.xheight,
+                    this.widget.xcolor,
+                    this.widget.isSelected),
               ),
-              width: (this.widget.isSelected && this.widget.dragable)
-                  ? this.widget.xwidth + 10
-                  : this.widget.xwidth,
-              height: this.widget.isSelected
-                  ? this.widget.xheight + 10
-                  : this.widget.xheight,
+              width: this.widget.xwidth,
+              height: this.widget.xheight,
             )));
   }
 }
@@ -94,10 +82,13 @@ class _XRectanglePainter extends CustomPainter {
   double xwidth = 0;
   double xheight = 0;
   MaterialColor xcolor;
-  _XRectanglePainter(double width, double height, MaterialColor color) {
+  bool isSelected = false;
+  _XRectanglePainter(
+      double width, double height, MaterialColor color, bool isSelected) {
     this.xwidth = width;
     this.xheight = height;
     this.xcolor = color;
+    this.isSelected = isSelected;
   }
 
   @override
@@ -106,6 +97,18 @@ class _XRectanglePainter extends CustomPainter {
     paint.color = this.xcolor;
     var rect = Rect.fromLTWH(0, 0, this.xwidth, this.xheight);
     canvas.drawRect(rect, paint);
+
+    if (this.isSelected) {
+      var path = Path();
+      paint.color = Colors.black;
+      paint.strokeWidth = 3.0;
+      paint.style = PaintingStyle.stroke;
+      path.lineTo(0, this.xwidth);
+      path.lineTo(this.xwidth, this.xheight);
+      path.lineTo(this.xwidth, 0);
+      path.lineTo(0, 0);
+      canvas.drawPath(path, paint);
+    }
   }
 
   @override

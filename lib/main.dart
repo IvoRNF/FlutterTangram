@@ -3,7 +3,6 @@ import './rectangle.dart';
 import './triangle.dart';
 import './observable.dart';
 
-
 void main() => runApp(TangramApp());
 
 class TangramApp extends StatefulWidget {
@@ -19,18 +18,11 @@ class TangramApp extends StatefulWidget {
 }
 
 class _TangramApp extends State<TangramApp> {
-  int _selectedIndex = -1;
-  num xleft = 75;
-  num xtop = 75;
-
   @override
   void initState() {
     super.initState();
-
-    
   }
 
-  
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -51,43 +43,44 @@ class _TangramApp extends State<TangramApp> {
                 width: this.widget.xwidth * 2,
                 height: this.widget.xheight * 2,
                 color: Colors.grey,
-                
-                index: 0,
-                dragable: false,
-                key: UniqueKey()),
+                dragable: false),
             XRectangle(
-                left: this.xleft,
-                top: this.xtop,
-                width: this.widget.xwidth,
-                height: this.widget.xheight,
-                color: Colors.blue,
-                index: 1,
-                dragable: true,
-                key: UniqueKey()),
+              left: 75,
+              top: 75,
+              width: this.widget.xwidth,
+              height: this.widget.xheight,
+              color: Colors.blue,
+            ),
             XRectangle(
                 left: 195,
                 top: 75,
                 width: this.widget.xwidth,
                 height: this.widget.xheight,
-                color: Colors.red,
-                index: 2,
-                dragable: true,
-                key: UniqueKey()),
+                color: Colors.red),
             XRectangle(
                 left: 315,
                 top: 75,
                 width: this.widget.xwidth,
                 height: this.widget.xheight,
-                color: Colors.green,
-                index: 3,
-                dragable: true,
-                key: UniqueKey()),
-            XTriangle(75, 195, this.widget.xwidth, this.widget.xheight,
-                Colors.orange),
+                color: Colors.green),
             XTriangle(
-                195, 195, this.widget.xwidth, this.widget.xheight, Colors.pink),
-            XTriangle(315, 195, this.widget.xwidth, this.widget.xheight,
-                Colors.purple),
+                left: 75,
+                top: 195,
+                width: this.widget.xwidth,
+                height: this.widget.xheight,
+                color: Colors.orange),
+            XTriangle(
+                left: 195,
+                top: 195,
+                width: this.widget.xwidth,
+                height: this.widget.xheight,
+                color: Colors.pink),
+            XTriangle(
+                left: 315,
+                top: 195,
+                width: this.widget.xwidth,
+                height: this.widget.xheight,
+                color: Colors.purple),
           ],
         ),
         floatingActionButton: FloatingActionButton(
