@@ -57,7 +57,7 @@ class _TangramApp extends State<TangramApp> {
                 width: this.widget.xwidth,
                 height: this.widget.xheight,
                 color: Colors.red),
-            XRectangle(
+            XTriangle(
                 left: 315,
                 top: 75,
                 width: this.widget.xwidth,
@@ -84,7 +84,11 @@ class _TangramApp extends State<TangramApp> {
           ],
         ),
         floatingActionButton: FloatingActionButton(
-          onPressed: () {},
+          onPressed: () {
+
+            var obs = Observable();
+            obs.notify('rotate', null);
+          },
           child: Icon(Icons.rotate_right),
         ),
       ),

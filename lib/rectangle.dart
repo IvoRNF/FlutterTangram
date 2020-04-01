@@ -66,11 +66,7 @@ class _XRectangle extends State<XRectangle> {
             },
             child: Container(
               child: CustomPaint(
-                painter: _XRectanglePainter(
-                    this.widget.xwidth,
-                    this.widget.xheight,
-                    this.widget.xcolor,
-                    this.widget.isSelected),
+                painter: _XRectanglePainter(widget: this.widget),
               ),
               width: this.widget.xwidth,
               height: this.widget.xheight,
@@ -79,33 +75,24 @@ class _XRectangle extends State<XRectangle> {
 }
 
 class _XRectanglePainter extends CustomPainter {
-  double xwidth = 0;
-  double xheight = 0;
-  MaterialColor xcolor;
-  bool isSelected = false;
-  _XRectanglePainter(
-      double width, double height, MaterialColor color, bool isSelected) {
-    this.xwidth = width;
-    this.xheight = height;
-    this.xcolor = color;
-    this.isSelected = isSelected;
-  }
+  XRectangle widget;
+  _XRectanglePainter({this.widget});
 
   @override
   void paint(Canvas canvas, Size size) {
     Paint paint = Paint();
-    paint.color = this.xcolor;
-    var rect = Rect.fromLTWH(0, 0, this.xwidth, this.xheight);
+    paint.color = this.widget.xcolor;
+    var rect = Rect.fromLTWH(0, 0, this.widget.xwidth, this.widget.xheight);
     canvas.drawRect(rect, paint);
 
-    if (this.isSelected) {
+    if (this.widget.isSelected) {
       var path = Path();
       paint.color = Colors.black;
       paint.strokeWidth = 3.0;
       paint.style = PaintingStyle.stroke;
-      path.lineTo(0, this.xwidth);
-      path.lineTo(this.xwidth, this.xheight);
-      path.lineTo(this.xwidth, 0);
+      path.lineTo(0, this.widget.xwidth);
+      path.lineTo(this.widget.xwidth, this.widget.xheight);
+      path.lineTo(this.widget.xwidth, 0);
       path.lineTo(0, 0);
       canvas.drawPath(path, paint);
     }

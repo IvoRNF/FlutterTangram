@@ -9,7 +9,7 @@ class XTriangle extends StatefulWidget {
   MaterialColor xcolor;
   Key selectedKey = UniqueKey();
   bool dragable = true;
-
+  bool rotated = false;
   XTriangle(
       {double left,
       double top,
@@ -46,6 +46,12 @@ class _XTriangle extends State<XTriangle> {
         this.widget.selectedKey = selKey;
       });
     });
+
+    obs.subscribe('rotate', (value) {
+      setState(() {
+        if (this.widget.isSelected) this.widget.rotated = !this.widget.rotated;
+      });
+    });
   }
 
   @override
@@ -66,11 +72,7 @@ class _XTriangle extends State<XTriangle> {
             },
             child: Container(
               child: CustomPaint(
-                painter: _XTrianglePainter(
-                    this.widget.xwidth,
-                    this.widget.xheight,
-                    this.widget.xcolor,
-                    this.widget.isSelected),
+                painter: _XTrianglePainter(widget: this.widget),
               ),
               width: this.widget.xwidth,
               height: this.widget.xheight,
@@ -79,35 +81,26 @@ class _XTriangle extends State<XTriangle> {
 }
 
 class _XTrianglePainter extends CustomPainter {
-  double xwidth = 0;
-  double xheight = 0;
-  MaterialColor xcolor;
-  bool isSelected = false;
-  _XTrianglePainter(
-      double width, double height, MaterialColor color, bool isSelected) {
-    this.xwidth = width;
-    this.xheight = height;
-    this.xcolor = color;
-    this.isSelected = isSelected;
-  }
+  XTriangle widget;
+  _XTrianglePainter({this.widget});
 
   @override
   void paint(Canvas canvas, Size size) {
     var path = Path();
     Paint paint = Paint();
-    paint.color = this.xcolor;
-    path.moveTo(0, 0);
-    path.lineTo(0 + this.xwidth, 0);
-    path.lineTo(0, 0 + this.xheight);
+
+    paint.color = this.widget.xcolor;
+    if (this.widget.rotated)
+      path.moveTo(this.widget.xwidth, this.widget.xheight);
+    else {
+      path.moveTo(0, 0);
+    }
+    path.lineTo(this.widget.xwidth, 0);
+    path.lineTo(0, this.widget.xheight);
     path.close();
     canvas.drawPath(path, paint);
 
-    if (this.isSelected) {
-      path.moveTo(0, 0);
-      path.lineTo(0 + this.xwidth, 0);
-      path.lineTo(0, 0 + this.xheight);
-      path.lineTo(0, 0);
-      path.close();
+    if (this.widget.isSelected) {
       paint.color = Colors.black;
       paint.strokeWidth = 3.0;
       paint.style = PaintingStyle.stroke;
