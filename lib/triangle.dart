@@ -54,20 +54,25 @@ class _XTriangle extends State<XTriangle> {
     });
   }
 
+  _changeSelection() {
+    Observable obs = Observable();
+    obs.notify('changeSelection', this.widget.key);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Positioned(
         left: this.widget.xleft,
         top: this.widget.xtop,
         child: GestureDetector(
+            onTap: this._changeSelection,
             onPanUpdate: (tapInfo) {
               if (!this.widget.dragable) return;
 
               setState(() {
                 this.widget.xleft += tapInfo.delta.dx;
                 this.widget.xtop += tapInfo.delta.dy;
-                Observable obs = Observable();
-                obs.notify('changeSelection', this.widget.key);
+                this._changeSelection();
               });
             },
             child: Container(
@@ -89,20 +94,28 @@ class _XTrianglePainter extends CustomPainter {
     var path = Path();
     Paint paint = Paint();
 
+    num w = this.widget.xwidth;
+    num h = this.widget.xheight;
+    num strokeWidth = 2;
+    if (this.widget.isSelected) {
+      w -= strokeWidth;
+      h -= strokeWidth;
+    }
+
     paint.color = this.widget.xcolor;
     if (this.widget.rotated)
-      path.moveTo(this.widget.xwidth, this.widget.xheight);
+      path.moveTo(w, h);
     else {
       path.moveTo(0, 0);
     }
-    path.lineTo(this.widget.xwidth, 0);
-    path.lineTo(0, this.widget.xheight);
+    path.lineTo(w, 0);
+    path.lineTo(0, h);
     path.close();
     canvas.drawPath(path, paint);
 
     if (this.widget.isSelected) {
       paint.color = Colors.black;
-      paint.strokeWidth = 3.0;
+      paint.strokeWidth = strokeWidth;
       paint.style = PaintingStyle.stroke;
       canvas.drawPath(path, paint);
     }

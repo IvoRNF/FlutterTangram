@@ -48,20 +48,25 @@ class _XRectangle extends State<XRectangle> {
     });
   }
 
+  _changeSelection() {
+    Observable obs = Observable();
+    obs.notify('changeSelection', this.widget.key);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Positioned(
         left: this.widget.xleft,
         top: this.widget.xtop,
         child: GestureDetector(
+            onTap: this._changeSelection,
             onPanUpdate: (tapInfo) {
               if (!this.widget.dragable) return;
 
               setState(() {
                 this.widget.xleft += tapInfo.delta.dx;
                 this.widget.xtop += tapInfo.delta.dy;
-                Observable obs = Observable();
-                obs.notify('changeSelection', this.widget.key);
+                this._changeSelection();
               });
             },
             child: Container(
@@ -80,19 +85,27 @@ class _XRectanglePainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
+    num strokeWidth = 2;
+    num w = this.widget.xwidth;
+    num h = this.widget.xheight;
+    if (this.widget.isSelected) {
+      w -= strokeWidth;
+      h -= strokeWidth;
+    }
+
     Paint paint = Paint();
     paint.color = this.widget.xcolor;
-    var rect = Rect.fromLTWH(0, 0, this.widget.xwidth, this.widget.xheight);
+    var rect = Rect.fromLTWH(0, 0, w, h);
     canvas.drawRect(rect, paint);
 
     if (this.widget.isSelected) {
       var path = Path();
       paint.color = Colors.black;
-      paint.strokeWidth = 3.0;
+      paint.strokeWidth = strokeWidth;
       paint.style = PaintingStyle.stroke;
-      path.lineTo(0, this.widget.xwidth);
-      path.lineTo(this.widget.xwidth, this.widget.xheight);
-      path.lineTo(this.widget.xwidth, 0);
+      path.lineTo(0, w);
+      path.lineTo(w, h);
+      path.lineTo(w, 0);
       path.lineTo(0, 0);
       canvas.drawPath(path, paint);
     }
