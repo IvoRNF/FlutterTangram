@@ -61,27 +61,25 @@ class _XTriangle extends State<XTriangle> {
 
   @override
   Widget build(BuildContext context) {
-    return Positioned(
-        left: this.widget.xleft,
-        top: this.widget.xtop,
-        child: GestureDetector(
-            onTap: this._changeSelection,
-            onPanUpdate: (tapInfo) {
-              if (!this.widget.dragable) return;
 
-              setState(() {
-                this.widget.xleft += tapInfo.delta.dx;
-                this.widget.xtop += tapInfo.delta.dy;
-                this._changeSelection();
-              });
-            },
-            child: Container(
-              child: CustomPaint(
-                painter: _XTrianglePainter(widget: this.widget),
-              ),
-              width: this.widget.xwidth,
-              height: this.widget.xheight,
-            )));
+    var triangle = Positioned(
+    left: this.widget.xleft,
+    top: this.widget.xtop,
+    child: GestureDetector(
+        onTap: this._changeSelection,
+        onPanUpdate: (tapInfo) {
+          if (!this.widget.dragable) return;
+
+          setState(() => this._changeSelection());
+        },
+        child: Container(
+          child: CustomPaint(
+            painter: _XTrianglePainter(widget: this.widget),
+          ),
+          width: this.widget.xwidth,
+          height: this.widget.xheight,
+        )));
+    return triangle;
   }
 }
 

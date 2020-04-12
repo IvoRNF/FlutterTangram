@@ -7,9 +7,10 @@ class XRectangle extends StatefulWidget {
   double xwidth = 0;
   double xheight = 0;
   MaterialColor xcolor;
+  bool visible = true;
   Key selectedKey = UniqueKey();
   bool dragable = true;
-
+  bool dragged = false;
   XRectangle(
       {double left,
       double top,
@@ -46,6 +47,14 @@ class _XRectangle extends State<XRectangle> {
         this.widget.selectedKey = selKey;
       });
     });
+
+    obs.subscribe('reset', (data) {
+      setState(() {
+        if (!this.widget.dragable) this.widget.xcolor = Colors.grey;
+        this.widget.visible = true;
+        this.widget.dragged = false;
+      });
+    });
   }
 
   _changeSelection() {
@@ -55,27 +64,50 @@ class _XRectangle extends State<XRectangle> {
 
   @override
   Widget build(BuildContext context) {
+    Widget container = Container(
+      child: CustomPaint(
+        painter: _XRectanglePainter(widget: this.widget),
+      ),
+      width: this.widget.xwidth,
+      height: this.widget.xheight,
+    );
+    if (this.widget.dragable) {
+      return Positioned(
+          left: this.widget.xleft,
+          top: this.widget.xtop,
+          child: Draggable(
+              key: UniqueKey(),
+              data: this.widget.xcolor,
+              onDragStarted: () {
+                setState(() {
+                  this.widget.visible = false;
+                  this._changeSelection();
+                });
+              },
+              onDraggableCanceled: (velocity, offset) =>
+                  setState(() => this.widget.visible = true),
+              onDragCompleted: () =>
+                  setState(() => this.widget.visible = false),
+              child: this.widget.visible ? container : Container(),
+              feedback: container,
+              childWhenDragging: Container()));
+    }
     return Positioned(
         left: this.widget.xleft,
         top: this.widget.xtop,
-        child: GestureDetector(
-            onTap: this._changeSelection,
-            onPanUpdate: (tapInfo) {
-              if (!this.widget.dragable) return;
-
-              setState(() {
-                this.widget.xleft += tapInfo.delta.dx;
-                this.widget.xtop += tapInfo.delta.dy;
-                this._changeSelection();
-              });
-            },
-            child: Container(
-              child: CustomPaint(
-                painter: _XRectanglePainter(widget: this.widget),
-              ),
-              width: this.widget.xwidth,
-              height: this.widget.xheight,
-            )));
+        child: DragTarget(
+          key: UniqueKey(),
+          builder: (BuildContext ctx, List<MaterialColor> data, rejectedData) {
+            return container;
+          },
+          onWillAccept: (MaterialColor data) {
+            this.widget.xcolor = data;
+            return true;
+          },
+          onAccept: (data) {
+            setState(() => this.widget.dragged = true);
+          },
+        ));
   }
 }
 

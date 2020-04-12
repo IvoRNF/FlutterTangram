@@ -33,6 +33,14 @@ class _TangramApp extends State<TangramApp> {
       ),
       home: Scaffold(
         appBar: AppBar(
+          actions: <Widget>[
+            IconButton(
+                icon: Icon(Icons.clear),
+                onPressed: () {
+                  var obs = Observable();
+                  obs.notify('reset', null);
+                })
+          ],
           title: Text(this.widget.title),
         ),
         body: Stack(
@@ -40,8 +48,15 @@ class _TangramApp extends State<TangramApp> {
             XRectangle(
                 left: 75,
                 top: 195 + this.widget.xwidth + 50,
-                width: this.widget.xwidth * 2,
-                height: this.widget.xheight * 2,
+                width: this.widget.xwidth,
+                height: this.widget.xheight,
+                color: Colors.grey,
+                dragable: false),
+            XRectangle(
+                left: 175,
+                top: 195 + this.widget.xwidth + 50,
+                width: this.widget.xwidth,
+                height: this.widget.xheight,
                 color: Colors.grey,
                 dragable: false),
             XRectangle(
@@ -85,7 +100,6 @@ class _TangramApp extends State<TangramApp> {
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: () {
-
             var obs = Observable();
             obs.notify('rotate', null);
           },
