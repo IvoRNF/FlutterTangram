@@ -77,7 +77,7 @@ class _XRectangle extends State<XRectangle> {
           top: this.widget.xtop,
           child: Draggable(
               key: UniqueKey(),
-              data: this.widget.xcolor,
+              data: this.widget.runtimeType.toString(),
               onDragStarted: () {
                 setState(() {
                   this.widget.visible = false;
@@ -97,11 +97,12 @@ class _XRectangle extends State<XRectangle> {
         top: this.widget.xtop,
         child: DragTarget(
           key: UniqueKey(),
-          builder: (BuildContext ctx, List<MaterialColor> data, rejectedData) {
+          builder: (BuildContext ctx, List<String> data, rejectedData) {
             return container;
           },
-          onWillAccept: (MaterialColor data) {
-            this.widget.xcolor = data;
+          onWillAccept: (String data) {
+            this.widget.xcolor = Colors.blue;
+           // print(data);
             return true;
           },
           onAccept: (data) {
