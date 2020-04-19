@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import './rectangle.dart';
 import './triangle.dart';
 import './observable.dart';
+import './rectangle.target.dart';
 
 void main() => runApp(TangramApp());
 
@@ -46,21 +47,17 @@ class _TangramApp extends State<TangramApp> {
         ),
         body: Stack(
           children: [
-            XTriangle(
+            XRectangleTarget(
                 left: 75,
                 top: 195 + this.widget.xwidth + 50,
                 width: this.widget.xwidth,
-                height: this.widget.xheight,
-                color: Colors.grey,
-                dragable: false),
-            /*XTriangle(
-                left: 75,
+                height: this.widget.xheight),
+                /*
+                XRectangleTarget(
+                left: 175,
                 top: 195 + this.widget.xwidth + 50,
                 width: this.widget.xwidth,
-                height: this.widget.xheight,
-                color: Colors.grey,
-                dragable: false,
-                rotated: true),*/
+                height: this.widget.xheight),*/
             XRectangle(
               left: 75,
               top: 75,

@@ -9,17 +9,13 @@ class XRectangle extends StatefulWidget {
   MaterialColor xcolor;
   bool visible = true;
   Key selectedKey = UniqueKey();
-  bool dragable = true;
-  bool dragged = false;
   XRectangle(
       {double left,
       double top,
       double width,
       double height,
-      MaterialColor color,
-      bool dragable = true})
-      : this.dragable = dragable,
-        super(key: UniqueKey()) {
+      MaterialColor color})
+      : super(key: UniqueKey()) {
     this.xleft = left;
     this.xtop = top;
     this.xwidth = width;
@@ -27,8 +23,15 @@ class XRectangle extends StatefulWidget {
     this.xcolor = color;
   }
 
+  void assign(XRectangle rect)
+  {
+    this.xcolor = rect.xcolor;
+    this.xwidth = rect.xwidth;
+    this.xheight = rect.xheight;
+  }
+
   bool get isSelected {
-    return ((this.selectedKey == this.key) && this.dragable);
+    return (this.selectedKey == this.key);
   }
 
   @override
@@ -50,9 +53,8 @@ class _XRectangle extends State<XRectangle> {
 
     obs.subscribe('reset', (data) {
       setState(() {
-        if (!this.widget.dragable) this.widget.xcolor = Colors.grey;
+      
         this.widget.visible = true;
-        this.widget.dragged = false;
       });
     });
   }
@@ -71,13 +73,13 @@ class _XRectangle extends State<XRectangle> {
       width: this.widget.xwidth,
       height: this.widget.xheight,
     );
-    if (this.widget.dragable) {
+      Widget data = this.widget;
       return Positioned(
           left: this.widget.xleft,
           top: this.widget.xtop,
           child: Draggable(
               key: UniqueKey(),
-              data: this.widget.runtimeType.toString(),
+              data: data,
               onDragStarted: () {
                 setState(() {
                   this.widget.visible = false;
@@ -91,24 +93,8 @@ class _XRectangle extends State<XRectangle> {
               child: this.widget.visible ? container : Container(),
               feedback: container,
               childWhenDragging: Container()));
-    }
-    return Positioned(
-        left: this.widget.xleft,
-        top: this.widget.xtop,
-        child: DragTarget(
-          key: UniqueKey(),
-          builder: (BuildContext ctx, List<String> data, rejectedData) {
-            return container;
-          },
-          onWillAccept: (String data) {
-            this.widget.xcolor = Colors.blue;
-           // print(data);
-            return true;
-          },
-          onAccept: (data) {
-            setState(() => this.widget.dragged = true);
-          },
-        ));
+    
+    
   }
 }
 

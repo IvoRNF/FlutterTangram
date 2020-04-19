@@ -8,20 +8,16 @@ class XTriangle extends StatefulWidget {
   double xheight = 0;
   MaterialColor xcolor;
   Key selectedKey = UniqueKey();
-  bool dragable = true;
   bool rotated = false;
   bool visible = true;
-  bool dragged = false;
   XTriangle(
       {double left,
       double top,
       double width,
       double height,
       MaterialColor color,
-      bool dragable = true,
       bool rotated = false})
-      : this.dragable = dragable,
-        super(key: UniqueKey()) {
+      : super(key: UniqueKey()) {
     this.xleft = left;
     this.xtop = top;
     this.xwidth = width;
@@ -31,7 +27,15 @@ class XTriangle extends StatefulWidget {
   }
 
   bool get isSelected {
-    return ((this.selectedKey == this.key) && this.dragable);
+    return (this.selectedKey == this.key);
+  }
+
+  void assign(XTriangle rect)
+  {
+    this.xcolor = rect.xcolor;
+    this.xwidth = rect.xwidth;
+    this.xheight = rect.xheight;
+    this.rotated = rect.rotated;
   }
 
   @override
@@ -59,9 +63,7 @@ class _XTriangle extends State<XTriangle> {
 
     obs.subscribe('reset', (data) {
       setState(() {
-        if (!this.widget.dragable) this.widget.xcolor = Colors.grey;
         this.widget.visible = true;
-        this.widget.dragged = false;
       });
     });
   }
@@ -73,61 +75,35 @@ class _XTriangle extends State<XTriangle> {
 
   @override
   Widget build(BuildContext context) {
-
     var cpaint = CustomPaint(
-        painter: _XTrianglePainter(widget: this.widget),
-      );
+      painter: _XTrianglePainter(widget: this.widget),
+    );
     Widget container = Container(
-      decoration: BoxDecoration(
-        border: Border.all(color:Colors.black,width: 2)
-
-
-        )
-      ,
       child: cpaint,
       width: this.widget.xwidth,
       height: this.widget.xheight,
     );
-    if (this.widget.dragable) {
-      return Positioned(
-          left: this.widget.xleft,
-          top: this.widget.xtop,
-          child: Draggable(
-              key: UniqueKey(),
-              data: this.widget.runtimeType.toString(),
-              onDragStarted: () {
-                setState(() {
-                  this.widget.visible = false;
-                  this._changeSelection();
-                });
-              },
-              onDraggableCanceled: (velocity, offset) =>
-                  setState(() => this.widget.visible = true),
-              onDragCompleted: () =>
-                  setState(() => this.widget.visible = false),
-              child: this.widget.visible ? container : Container(),
-              feedback: container,
-              childWhenDragging: Container()));
-    }
+
+    Widget data = this.widget;
+
     return Positioned(
         left: this.widget.xleft,
         top: this.widget.xtop,
-        child: DragTarget(
-          key: UniqueKey(),
-          builder: (BuildContext ctx, List<String> data, rejectedData) {
-            return container;
-          },
-          onWillAccept: (String data) {
-            if (this.widget.xcolor != Colors.grey) return false;
-
-            this.widget.xcolor = Colors.blue;
-
-            return true;
-          },
-          onAccept: (data) {
-            setState(() => this.widget.dragged = true);
-          },
-        ));
+        child: Draggable(
+            key: UniqueKey(),
+            data: data,
+            onDragStarted: () {
+              setState(() {
+                this.widget.visible = false;
+                this._changeSelection();
+              });
+            },
+            onDraggableCanceled: (velocity, offset) =>
+                setState(() => this.widget.visible = true),
+            onDragCompleted: () => setState(() => this.widget.visible = false),
+            child: this.widget.visible ? container : Container(),
+            feedback: container,
+            childWhenDragging: Container()));
   }
 }
 
