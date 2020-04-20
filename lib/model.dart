@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tangram/rectangle.dart';
 import 'package:tangram/triangle.dart';
+import './observable.dart';
 
 class Model {
   static Map<Key, List<Widget>> _keys = Map();
@@ -12,6 +13,19 @@ class Model {
     List<Widget> list = Model._keys[a];
 
     if (!list.contains(b)) list.add(b);
+
+    Model.checkCount();
+  }
+
+  static checkCount(){
+    var count = 0;
+    for(var k in Model._keys.keys){
+        count += Model._keys[k].length;
+    }
+    if(count == 6){
+      var obs = Observable();
+      obs.notify('sucess', null);
+    }
   }
 
   static containsInversedTriangle(Key k, bool rotated) {

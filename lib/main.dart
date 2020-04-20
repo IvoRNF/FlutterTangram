@@ -1,4 +1,6 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'dart:js' as js;
 import './rectangle.dart';
 import './triangle.dart';
 import './observable.dart';
@@ -21,7 +23,18 @@ class TangramApp extends StatefulWidget {
 class _TangramApp extends State<TangramApp> {
   @override
   void initState() {
+    
     super.initState();
+    var obs = Observable();
+    obs.subscribe('sucess', (value) {
+      var xshowDialog = () {
+        js.context.callMethod('alert',['Parabéns']);
+        obs.notify('reset',null);
+      };
+      var future =
+          new Future.delayed(const Duration(milliseconds: 500), xshowDialog);
+      future.then((value) => null);
+    });
   }
 
   @override
@@ -48,59 +61,59 @@ class _TangramApp extends State<TangramApp> {
         body: Stack(
           children: [
             XRectangleTarget(
-                left: 75,
-                top: 195 + this.widget.xwidth + 50,
+                left: 5,
+                top: 125 + this.widget.xwidth,
                 width: this.widget.xwidth,
                 height: this.widget.xheight),
             XRectangleTarget(
-                left: 175,
-                top: 195 + this.widget.xwidth + 50,
+                left: 105,
+                top: 195 + this.widget.xwidth + 30,
                 width: this.widget.xwidth,
                 height: this.widget.xheight),
             XRectangleTarget(
-                left: 75,
-                top: 195 + this.widget.xwidth + 150,
+                left: 5,
+                top: 195 + this.widget.xwidth + 30,
                 width: this.widget.xwidth,
                 height: this.widget.xheight),
             XRectangleTarget(
-                left: 175,
-                top: 195 + this.widget.xwidth + 150,
+                left: 105,
+                top: 125 + this.widget.xwidth,
                 width: this.widget.xwidth,
                 height: this.widget.xheight),
             XRectangle(
-              left: 75,
-              top: 75,
+              left: 5,
+              top: 10,
               width: this.widget.xwidth,
               height: this.widget.xheight,
               color: color,
             ),
             XRectangle(
-                left: 195,
-                top: 75,
+                left: 115,
+                top: 10,
                 width: this.widget.xwidth,
                 height: this.widget.xheight,
                 color: color),
             XTriangle(
-                left: 315,
-                top: 75,
+                left: 225,
+                top: 10,
                 width: this.widget.xwidth,
                 height: this.widget.xheight,
                 color: color),
             XTriangle(
-                left: 75,
-                top: 195,
+                left: 5,
+                top: 115,
                 width: this.widget.xwidth,
                 height: this.widget.xheight,
                 color: color),
             XTriangle(
-                left: 195,
-                top: 195,
+                left: 115,
+                top: 115,
                 width: this.widget.xwidth,
                 height: this.widget.xheight,
                 color: color),
             XTriangle(
-                left: 315,
-                top: 195,
+                left: 215,
+                top: 115,
                 width: this.widget.xwidth,
                 height: this.widget.xheight,
                 color: color),
