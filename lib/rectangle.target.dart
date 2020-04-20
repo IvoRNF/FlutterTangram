@@ -2,16 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:tangram/rectangle.dart';
 import 'package:tangram/triangle.dart';
 import './observable.dart';
+import './model.dart';
 
 class XRectangleTarget extends StatefulWidget {
   double xleft = 0;
   double xtop = 0;
   double xwidth = 0;
   double xheight = 0;
-  MaterialColor xtriangleColor = Colors.grey;
   MaterialColor xcolor = Colors.grey;
-  bool isTriangle = false;
-  bool rotated = false;
+
   XRectangleTarget({double left, double top, double width, double height})
       : super(key: UniqueKey()) {
     this.xleft = left;
@@ -24,22 +23,6 @@ class XRectangleTarget extends StatefulWidget {
   State<StatefulWidget> createState() {
     return _XRectangleTarget();
   }
-
-  MaterialColor _defaultColor() {
-    return this.xcolor;
-  }
-
-  void assign(Widget data) {
-    if (data is XRectangle) {
-      this.xcolor = data.xcolor;
-      this.isTriangle = false;
-    }
-    if (data is XTriangle) {
-      this.isTriangle = true;
-      this.rotated = data.rotated;
-      this.xtriangleColor = data.xcolor;
-    }
-  }
 }
 
 class _XRectangleTarget extends State<XRectangleTarget> {
@@ -51,7 +34,7 @@ class _XRectangleTarget extends State<XRectangleTarget> {
     obs.subscribe('reset', (data) {
       setState(() {
         this.widget.xcolor = Colors.grey;
-        this.widget.isTriangle = false;
+        Model.clear();
       });
     });
   }
@@ -60,7 +43,7 @@ class _XRectangleTarget extends State<XRectangleTarget> {
   Widget build(BuildContext context) {
     var container = () {
       return Container(
-        color: this.widget._defaultColor(),
+        color: Colors.grey,
         child: CustomPaint(
           painter: _XRectangleTargetPainter(widget: this.widget),
         ),
@@ -78,9 +61,24 @@ class _XRectangleTarget extends State<XRectangleTarget> {
             return container();
           },
           onWillAccept: (Widget data) {
-            setState(() {
-              this.widget.assign(data);
-            });
+            if (Model.contains(this.widget)) {
+              return false;
+            }
+
+            if (Model.len(this.widget.key) == 1) {
+              if (data is XRectangle) {
+                return false;
+              }
+              if (data is XTriangle) {
+                if (!Model.containsInversedTriangle(
+                    this.widget.key, data.rotated)) {
+                  return false;
+                }
+              }
+            }
+            if (Model.len(this.widget.key) == 2) return false;
+
+            Model.add(this.widget.key, data);
 
             return true;
           },
@@ -97,15 +95,25 @@ class _XRectangleTargetPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    if (this.widget.isTriangle) {
+    bool isTriangle = false;
+    Key k = this.widget.key;
+
+    isTriangle = Model.containsOneTriangle(k);
+
+    if (Model.containsOneRectangle(k) || Model.containsTwoTriangle(k))
+      isTriangle = false;
+
+    if (isTriangle) {
+      List<Widget> lis = Model.find(k);
+      XTriangle trian = lis[0] as XTriangle;
       var path = Path();
       Paint paint = Paint();
 
       num w = this.widget.xwidth;
       num h = this.widget.xheight;
 
-      paint.color = this.widget.xtriangleColor;
-      if (this.widget.rotated)
+      paint.color = trian.xcolor;
+      if (trian.rotated)
         path.moveTo(w, h);
       else {
         path.moveTo(0, 0);
@@ -115,10 +123,19 @@ class _XRectangleTargetPainter extends CustomPainter {
       path.close();
       canvas.drawPath(path, paint);
     } else {
+      List<Widget> lis = Model.find(k);
+      MaterialColor c = Colors.grey;
+      if (lis != null) {
+        if (lis.length > 0) {
+          dynamic recta = lis[0];
+          c = recta.xcolor;
+        }
+      }
+
       num w = this.widget.xwidth;
       num h = this.widget.xheight;
       Paint paint = Paint();
-      paint.color = this.widget._defaultColor();
+      paint.color = c;
       var rect = Rect.fromLTWH(0, 0, w, h);
       canvas.drawRect(rect, paint);
     }

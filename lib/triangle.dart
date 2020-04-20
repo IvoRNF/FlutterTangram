@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import './observable.dart';
+import './model.dart';
 
 class XTriangle extends StatefulWidget {
   double xleft = 0;
@@ -28,14 +29,6 @@ class XTriangle extends StatefulWidget {
 
   bool get isSelected {
     return (this.selectedKey == this.key);
-  }
-
-  void assign(XTriangle rect)
-  {
-    this.xcolor = rect.xcolor;
-    this.xwidth = rect.xwidth;
-    this.xheight = rect.xheight;
-    this.rotated = rect.rotated;
   }
 
   @override
@@ -101,7 +94,9 @@ class _XTriangle extends State<XTriangle> {
             onDraggableCanceled: (velocity, offset) =>
                 setState(() => this.widget.visible = true),
             onDragCompleted: () => setState(() => this.widget.visible = false),
-            child: this.widget.visible ? container : Container(),
+            child: this.widget.visible && (!Model.contains(this.widget))
+                ? container
+                : Container(),
             feedback: container,
             childWhenDragging: Container()));
   }

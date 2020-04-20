@@ -28,12 +28,49 @@ class Model {
     return false;
   }
 
+  static containsOneTriangle(Key k) {
+    if (!Model._keys.keys.contains(k)) Model._keys[k] = [];
+    List<Widget> list = Model._keys[k];
+    if (list.length > 0) {
+      Widget w = list[0];
+      return (w is XTriangle);
+    }
+    return false;
+  }
+
+  static containsTwoTriangle(Key k) {
+    if (!Model._keys.keys.contains(k)) Model._keys[k] = [];
+    List<Widget> list = Model._keys[k];
+    if (list.length > 1) {
+      Widget w = list[0];
+      Widget w2 = list[1];
+      return ((w is XTriangle) && (w2 is XTriangle));
+    }
+    return false;
+  }
+
+  static containsOneRectangle(Key k) {
+    if (!Model._keys.keys.contains(k)) Model._keys[k] = [];
+    List<Widget> list = Model._keys[k];
+    if (list.length > 0) {
+      Widget w = list[0];
+      return ((w is XRectangle));
+    }
+    return false;
+  }
+
   static contains(Widget k) {
     for (var key in Model._keys.keys) {
       List<Widget> list = Model._keys[key];
       if (list.contains(k)) return true;
     }
     return false;
+  }
+
+  static List<Widget> find(Key k) {
+     if(Model._keys.keys.contains(k))
+       return Model._keys[k];
+     return null;  
   }
 
   static clear() {

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import './observable.dart';
+import './model.dart';
 
 class XRectangle extends StatefulWidget {
   double xleft = 0;
@@ -21,13 +22,6 @@ class XRectangle extends StatefulWidget {
     this.xwidth = width;
     this.xheight = height;
     this.xcolor = color;
-  }
-
-  void assign(XRectangle rect)
-  {
-    this.xcolor = rect.xcolor;
-    this.xwidth = rect.xwidth;
-    this.xheight = rect.xheight;
   }
 
   bool get isSelected {
@@ -53,7 +47,6 @@ class _XRectangle extends State<XRectangle> {
 
     obs.subscribe('reset', (data) {
       setState(() {
-      
         this.widget.visible = true;
       });
     });
@@ -73,28 +66,27 @@ class _XRectangle extends State<XRectangle> {
       width: this.widget.xwidth,
       height: this.widget.xheight,
     );
-      Widget data = this.widget;
-      return Positioned(
-          left: this.widget.xleft,
-          top: this.widget.xtop,
-          child: Draggable(
-              key: UniqueKey(),
-              data: data,
-              onDragStarted: () {
-                setState(() {
-                  this.widget.visible = false;
-                  this._changeSelection();
-                });
-              },
-              onDraggableCanceled: (velocity, offset) =>
-                  setState(() => this.widget.visible = true),
-              onDragCompleted: () =>
-                  setState(() => this.widget.visible = false),
-              child: this.widget.visible ? container : Container(),
-              feedback: container,
-              childWhenDragging: Container()));
-    
-    
+    Widget data = this.widget;
+    return Positioned(
+        left: this.widget.xleft,
+        top: this.widget.xtop,
+        child: Draggable(
+            key: UniqueKey(),
+            data: data,
+            onDragStarted: () {
+              setState(() {
+                this.widget.visible = false;
+                this._changeSelection();
+              });
+            },
+            onDraggableCanceled: (velocity, offset) =>
+                setState(() => this.widget.visible = true),
+            onDragCompleted: () => setState(() => this.widget.visible = false),
+            child: this.widget.visible && (!Model.contains(this.widget))
+                ? container
+                : Container(),
+            feedback: container,
+            childWhenDragging: Container()));
   }
 }
 

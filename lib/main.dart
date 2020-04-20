@@ -52,12 +52,21 @@ class _TangramApp extends State<TangramApp> {
                 top: 195 + this.widget.xwidth + 50,
                 width: this.widget.xwidth,
                 height: this.widget.xheight),
-                /*
-                XRectangleTarget(
+            XRectangleTarget(
                 left: 175,
                 top: 195 + this.widget.xwidth + 50,
                 width: this.widget.xwidth,
-                height: this.widget.xheight),*/
+                height: this.widget.xheight),
+            XRectangleTarget(
+                left: 75,
+                top: 195 + this.widget.xwidth + 150,
+                width: this.widget.xwidth,
+                height: this.widget.xheight),
+            XRectangleTarget(
+                left: 175,
+                top: 195 + this.widget.xwidth + 150,
+                width: this.widget.xwidth,
+                height: this.widget.xheight),
             XRectangle(
               left: 75,
               top: 75,
