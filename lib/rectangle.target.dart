@@ -123,8 +123,7 @@ class _XRectangleTargetPainter extends CustomPainter {
       List<Widget> lis = Model.find(k);
       drawXTrian(lis.first as XTriangle);
       drawXTrian(lis.last as XTriangle);
-    }
-    else if (isTriangle) {
+    } else if (isTriangle) {
       List<Widget> lis = Model.find(k);
       drawXTrian(lis.first as XTriangle);
     } else {
