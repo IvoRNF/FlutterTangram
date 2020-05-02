@@ -32,7 +32,7 @@ class Model {
     if (!Model._keys.keys.contains(k)) Model._keys[k] = [];
     List<Widget> list = Model._keys[k];
     if (list.length > 0) {
-      Widget w = list[0];
+      Widget w = list.first;
       if (w is XTriangle) {
         if (w.rotated != rotated) {
           return true;
@@ -46,7 +46,7 @@ class Model {
     if (!Model._keys.keys.contains(k)) Model._keys[k] = [];
     List<Widget> list = Model._keys[k];
     if (list.length > 0) {
-      Widget w = list[0];
+      Widget w = list.first;
       return (w is XTriangle);
     }
     return false;
@@ -56,7 +56,7 @@ class Model {
     if (!Model._keys.keys.contains(k)) Model._keys[k] = [];
     List<Widget> list = Model._keys[k];
     if (list.length > 1) {
-      Widget w = list[0];
+      Widget w = list.first;
       Widget w2 = list[1];
       return ((w is XTriangle) && (w2 is XTriangle));
     }
@@ -67,7 +67,7 @@ class Model {
     if (!Model._keys.keys.contains(k)) Model._keys[k] = [];
     List<Widget> list = Model._keys[k];
     if (list.length > 0) {
-      Widget w = list[0];
+      Widget w = list.first;
       return ((w is XRectangle));
     }
     return false;
@@ -88,7 +88,8 @@ class Model {
   }
 
   static clear() {
-    Model._keys.clear();
+    if(Model._keys.isNotEmpty)
+      Model._keys.clear();
   }
 
   static len(Key a) {

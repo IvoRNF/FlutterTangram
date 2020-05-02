@@ -57,6 +57,7 @@ class _XTriangle extends State<XTriangle> {
     obs.subscribe('reset', (data) {
       setState(() {
         this.widget.visible = true;
+        this.widget.rotated = false;
       });
     });
   }

@@ -77,13 +77,10 @@ class _XRectangleTarget extends State<XRectangleTarget> {
               }
             }
             if (Model.len(this.widget.key) == 2) return false;
-
-            Model.add(this.widget.key, data);
-
             return true;
           },
           onAccept: (data) {
-            setState(() {});
+            setState(() => Model.add(this.widget.key, data));
           },
         ));
   }
@@ -100,12 +97,11 @@ class _XRectangleTargetPainter extends CustomPainter {
 
     isTriangle = Model.containsOneTriangle(k);
 
-    if (Model.containsOneRectangle(k) || Model.containsTwoTriangle(k))
-      isTriangle = false;
+    bool twoTri = Model.containsTwoTriangle(k);
 
-    if (isTriangle) {
-      List<Widget> lis = Model.find(k);
-      XTriangle trian = lis[0] as XTriangle;
+    if (Model.containsOneRectangle(k) || twoTri) isTriangle = false;
+
+    var drawXTrian = (XTriangle trian) {
       var path = Path();
       Paint paint = Paint();
 
@@ -122,12 +118,21 @@ class _XRectangleTargetPainter extends CustomPainter {
       path.lineTo(0, h);
       path.close();
       canvas.drawPath(path, paint);
+    };
+    if (twoTri) {
+      List<Widget> lis = Model.find(k);
+      drawXTrian(lis.first as XTriangle);
+      drawXTrian(lis.last as XTriangle);
+    }
+    else if (isTriangle) {
+      List<Widget> lis = Model.find(k);
+      drawXTrian(lis.first as XTriangle);
     } else {
       List<Widget> lis = Model.find(k);
       MaterialColor c = Colors.grey;
       if (lis != null) {
         if (lis.length > 0) {
-          dynamic recta = lis[0];
+          XRectangle recta = lis.first;
           c = recta.xcolor;
         }
       }
