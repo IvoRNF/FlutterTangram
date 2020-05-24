@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import './observable.dart';
 import './model.dart';
 
 class XTriangle extends StatefulWidget {
@@ -41,20 +40,20 @@ class _XTriangle extends State<XTriangle> {
   @override
   void initState() {
     super.initState();
-    Observable obs = Observable();
-    obs.subscribe('changeSelection', (Key selKey) {
+  
+    Model.onChangeSelection.listen( (Key selKey) {
       setState(() {
         this.widget.selectedKey = selKey;
       });
     });
 
-    obs.subscribe('rotate', (value) {
+    Model.onRotate.listen( (value) {
       setState(() {
         if (this.widget.isSelected) this.widget.rotated = !this.widget.rotated;
       });
     });
 
-    obs.subscribe('reset', (data) {
+    Model.onReset.listen((data) {
       setState(() {
         this.widget.visible = true;
         this.widget.rotated = false;
@@ -63,8 +62,7 @@ class _XTriangle extends State<XTriangle> {
   }
 
   _changeSelection() {
-    Observable obs = Observable();
-    obs.notify('changeSelection', this.widget.key);
+    Model.doChangeSelection.add(this.widget.key);
   }
 
   @override

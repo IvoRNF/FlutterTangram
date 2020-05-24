@@ -1,12 +1,38 @@
 import 'package:flutter/material.dart';
 import 'package:tangram/rectangle.dart';
 import 'package:tangram/triangle.dart';
-import './observable.dart';
+import 'dart:async';
 
 class Model {
   static Map<Key, List<Widget>> _keys = Map();
 
+
+  static StreamController<Key> _changeSelection = StreamController.broadcast();
+
+  static StreamController<void> _reset = StreamController.broadcast();
+
+  static StreamController<void> _rotate = StreamController.broadcast();
+
+  static StreamController<bool> _sucess = StreamController<bool>();
+
+  static Sink<bool> get doSucess => _sucess.sink;
+  static Stream<bool> get onSucess => _sucess.stream;
+  
+  static Sink<void> get doRotate => _rotate.sink;
+  
+  static Stream<void> get onRotate => _rotate.stream;
+
+  static Sink<Key> get doChangeSelection => _changeSelection.sink;
+
+  static  Stream<Key> get onChangeSelection => _changeSelection.stream;
+
+  static Sink<void> get doReset => _reset.sink;
+
+  static Stream<void> get onReset => _reset.stream;
+
+
   static add(Key a, Widget b) {
+     
     if (Model.contains(b)) return;
     if (!Model._keys.keys.contains(a)) Model._keys[a] = [];
 
@@ -23,8 +49,7 @@ class Model {
         count += Model._keys[k].length;
     }
     if(count == 6){
-      var obs = Observable();
-      obs.notify('sucess', null);
+      Model.doSucess.add(true);
     }
   }
 

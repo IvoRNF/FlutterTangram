@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import './observable.dart';
 import './model.dart';
 
 class XRectangle extends StatefulWidget {
@@ -38,14 +37,14 @@ class _XRectangle extends State<XRectangle> {
   @override
   void initState() {
     super.initState();
-    Observable obs = Observable();
-    obs.subscribe('changeSelection', (Key selKey) {
+   
+    Model.onChangeSelection.listen( (Key selKey) {
       setState(() {
         this.widget.selectedKey = selKey;
       });
     });
 
-    obs.subscribe('reset', (data) {
+    Model.onReset.listen( (data) {
       setState(() {
         this.widget.visible = true;
       });
@@ -53,8 +52,7 @@ class _XRectangle extends State<XRectangle> {
   }
 
   _changeSelection() {
-    Observable obs = Observable();
-    obs.notify('changeSelection', this.widget.key);
+    Model.doChangeSelection.add(this.widget.key);
   }
 
   @override

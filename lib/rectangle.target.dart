@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tangram/rectangle.dart';
 import 'package:tangram/triangle.dart';
-import './observable.dart';
 import './model.dart';
 
 class XRectangleTarget extends StatefulWidget {
@@ -29,9 +28,7 @@ class _XRectangleTarget extends State<XRectangleTarget> {
   @override
   void initState() {
     super.initState();
-    Observable obs = Observable();
-
-    obs.subscribe('reset', (data) {
+    Model.onReset.listen((data) {
       setState(() {
         this.widget.xcolor = Colors.grey;
         Model.clear();
